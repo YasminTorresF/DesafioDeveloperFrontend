@@ -4,8 +4,15 @@
  */
 package view;
 
+import controller.ProjectController;
+import controller.TaskController;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import model.Project;
 
 /**
  *
@@ -13,12 +20,18 @@ import java.awt.Font;
  */
 public class mainScreen extends javax.swing.JFrame {
 
-    /**
-     * Creates new form mainScreen
-     */
+    ProjectController projectController;
+    TaskController taskController;
+    
+    DefaultListModel projectModel;
+    
     public mainScreen() {
         initComponents();
         decorateTableTask();
+       
+        initDataController();
+        initComponentsModel();
+        
     }
 
     /**
@@ -44,7 +57,7 @@ public class mainScreen extends javax.swing.JFrame {
         jLabelTasksAdd = new javax.swing.JLabel();
         jPanelList = new javax.swing.JPanel();
         jScrollListProjects = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jListProjects = new javax.swing.JList<>();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableTasks = new javax.swing.JTable();
@@ -125,6 +138,7 @@ public class mainScreen extends javax.swing.JFrame {
         jLabelProjectsTitle.setText("Projetos");
 
         jLabelProjectsAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ADD.png"))); // NOI18N
+        jLabelProjectsAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelProjectsAdd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabelProjectsAddMouseClicked(evt);
@@ -160,6 +174,7 @@ public class mainScreen extends javax.swing.JFrame {
         jLabelTasksTitle.setText("Tarefas");
 
         jLabelTasksAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ADD.png"))); // NOI18N
+        jLabelTasksAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelTasksAdd.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabelTasksAddMouseClicked(evt);
@@ -193,21 +208,15 @@ public class mainScreen extends javax.swing.JFrame {
         jPanelList.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanelList.setMaximumSize(new java.awt.Dimension(100, 32767));
 
-        jList1.setBorder(null);
-        jList1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jList1.setForeground(new java.awt.Color(145, 119, 143));
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jList1.setFixedCellHeight(25);
-        jList1.setFixedCellWidth(10);
-        jList1.setSelectionBackground(new java.awt.Color(221, 193, 192));
-        jList1.setSelectionForeground(java.awt.Color.white);
-        jScrollListProjects.setViewportView(jList1);
+        jListProjects.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jListProjects.setForeground(new java.awt.Color(145, 119, 143));
+        jListProjects.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListProjects.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jListProjects.setFixedCellHeight(25);
+        jListProjects.setFixedCellWidth(10);
+        jListProjects.setSelectionBackground(new java.awt.Color(221, 193, 192));
+        jListProjects.setSelectionForeground(java.awt.Color.white);
+        jScrollListProjects.setViewportView(jListProjects);
 
         javax.swing.GroupLayout jPanelListLayout = new javax.swing.GroupLayout(jPanelList);
         jPanelList.setLayout(jPanelListLayout);
@@ -251,6 +260,7 @@ public class mainScreen extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        jTableTasks.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTableTasks.setGridColor(new java.awt.Color(255, 255, 255));
         jTableTasks.setMaximumSize(new java.awt.Dimension(2147483647, 800));
         jTableTasks.setMinimumSize(new java.awt.Dimension(60, 600));
@@ -308,6 +318,13 @@ public class mainScreen extends javax.swing.JFrame {
         // TODO add your handling code here:
         ProjectDialogScreen projectDialogScreen = new ProjectDialogScreen(this, rootPaneCheckingEnabled);
         projectDialogScreen.setVisible(true);
+        
+        projectDialogScreen.addWindowListener(new WindowAdapter(){
+           public void windowClosed(WindowEvent e){
+               loadProjects();
+           }
+        });
+        
     }//GEN-LAST:event_jLabelProjectsAddMouseClicked
 
     private void jLabelTasksAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabelTasksAddMouseClicked
@@ -363,7 +380,7 @@ public class mainScreen extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTasksAdd;
     private javax.swing.JLabel jLabelTasksTitle;
     private javax.swing.JLabel jLabelToobarTitle;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jListProjects;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanelEmptyList;
     private javax.swing.JPanel jPanelList;
@@ -383,7 +400,31 @@ public class mainScreen extends javax.swing.JFrame {
 
     }
 
+  public void initDataController(){
+      projectController = new ProjectController();
+      taskController = new TaskController();
+      
+  }
+  
+  public void initComponentsModel(){
+      projectModel = new DefaultListModel();
+      loadProjects();
+      
+  }
 
-
+  public void loadProjects(){
+      List<Project>projects = projectController.getAll();
+      
+      projectModel.clear();
+      
+      for(int i = 0; i < projects.size(); i++){
+          Project project = projects.get(i);
+          projectModel.addElement(project);
+          
+      }
+     
+      jListProjects.setModel(projectModel);
+      
+  }
 }
 

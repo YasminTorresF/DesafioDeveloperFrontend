@@ -96,7 +96,7 @@ public class TaskDialogScreen extends javax.swing.JDialog {
         jScrollPaneDescription.setViewportView(jTextAreaDescription);
 
         jLabelToobarSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-selecionado-40 (1).png"))); // NOI18N
-        jLabelToobarSave.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jLabelToobarSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelToobarSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabelToobarSaveMouseClicked(evt);
