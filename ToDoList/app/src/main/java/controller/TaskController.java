@@ -38,7 +38,7 @@ public class TaskController {
                 statement.setInt(1, task.getIdProject());
                 statement.setString(2, task.getName());
                 statement.setString(3, task.getDescription());
-                statement.setBoolean(4, task.isIsCompleted());
+                statement.setBoolean(4, task.isisCompleted());
                 statement.setString(5, task.getNotes());
                 statement.setDate(6, new Date(task.getDeadline().getTime()));
                 statement.setDate(7, new Date(task.getCreatedAt().getTime()));
@@ -72,7 +72,7 @@ public class TaskController {
             statement.setString(2, task.getName());
             statement.setString(3, task.getDescription());
             statement.setString(4, task.getNotes());
-            statement.setBoolean(5, task.isIsCompleted());
+            statement.setBoolean(5, task.isisCompleted());
             statement.setDate(6, new Date(task.getDeadline().getTime()));
             statement.setDate(7, new Date(task.getCreatedAt().getTime()));
             statement.setDate(8, new Date(task.getUpdatedAt().getTime()));
